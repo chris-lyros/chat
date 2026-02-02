@@ -311,17 +311,6 @@ function updateProjectedSpending() {
     }
 }
 
-// Apply color coding to model options
-function applyModelColors() {
-    const select = document.getElementById('modelSelect');
-    const options = select.getElementsByTagName('option');
-    
-    for (let option of options) {
-        const supplier = option.dataset.supplier;
-        option.classList.add(`model-${supplier}`);
-    }
-}
-
 // Message handling
 function sendMessage() {
     const input = document.getElementById('messageInput');
