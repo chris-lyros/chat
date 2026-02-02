@@ -1,0 +1,268 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/chris-lyros/chat@main/webflow/raff-combo.css">
+
+<div id="raff-container">
+<!-- Top Banner -->
+<div class="top-banner">
+    <div class="logo">
+        <div class="logo-icon">
+            <img id="logoImage" src="https://cdn.jsdelivr.net/gh/chris-lyros/chat@main/webflow/images/dog1.jpg" alt="Raff">
+        </div>
+        <span>Raff</span>
+    </div>
+    <div class="banner-buttons">
+        <button class="banner-btn" onclick="togglePanel('about')"><span>ℹ️</span> About</button>
+        <button class="banner-btn" onclick="togglePanel('spend')"><span>💰</span> Spend</button>
+        <button class="banner-btn" onclick="togglePanel('mems')"><span>🧠</span> Mems</button>
+    </div>
+</div>
+
+<!-- Main Container -->
+<div class="main-container">
+    <!-- Chat Area -->
+    <div class="chat-area" id="chatArea">
+        <div class="chat-content">
+            <!-- Welcome Section -->
+            <div class="welcome-section" id="welcomeSection">
+                <h1>Welcome to Raff</h1>
+                <p>Your intelligent AI assistant with privacy and control</p>
+            </div>
+
+            <!-- Messages (hidden initially) -->
+            <div class="messages" id="messages" style="display: none;"></div>
+
+            <!-- Model Controls -->
+            <div class="model-controls">
+                <div class="control-group">
+                    <label>Model</label>
+                    <select id="modelSelect" onchange="updateModelInfo()">
+                        <option value="claude-opus-4" data-cost="15.00" data-strength="Deep reasoning" data-supplier="anthropic">Claude Opus 4 - $15.00 / 1M</option>
+                        <option value="grok-2" data-cost="10.00" data-strength="Real-time insights" data-supplier="xai">Grok-2 - $10.00 / 1M</option>
+                        <option value="gpt-4o" data-cost="5.00" data-strength="Vision & reasoning" data-supplier="openai">GPT-4o - $5.00 / 1M</option>
+                        <option value="grok-beta" data-cost="5.00" data-strength="Experimental features" data-supplier="xai">Grok Beta - $5.00 / 1M</option>
+                        <option value="claude-sonnet-4.5" data-cost="3.00" data-strength="Coding & reasoning" data-supplier="anthropic">Claude Sonnet 4.5 - $3.00 / 1M</option>
+                        <option value="claude-sonnet-3.5" data-cost="3.00" data-strength="Writing & analysis" data-supplier="anthropic">Claude Sonnet 3.5 - $3.00 / 1M</option>
+                        <option value="gpt-4-turbo" data-cost="3.00" data-strength="Complex tasks" data-supplier="openai">GPT-4 Turbo - $3.00 / 1M</option>
+                        <option value="gemini-1.5-pro" data-cost="2.50" data-strength="Multimodal tasks" data-supplier="gemini">Gemini 1.5 Pro - $2.50 / 1M</option>
+                        <option value="grok-2-mini" data-cost="2.00" data-strength="Real-time data" data-supplier="xai">Grok-2 Mini - $2.00 / 1M</option>
+                        <option value="llama-3.1-405b" data-cost="0.80" data-strength="Advanced reasoning" data-supplier="meta">Llama 3.1 405B - $0.80 / 1M</option>
+                        <option value="claude-haiku-4" data-cost="0.80" data-strength="Speed & cost" data-supplier="anthropic">Claude Haiku 4 - $0.80 / 1M</option>
+                        <option value="gpt-4o-mini" data-cost="0.60" data-strength="Balanced performance" data-supplier="openai" selected>GPT-4o Mini - $0.60 / 1M</option>
+                        <option value="llama-3.3-70b" data-cost="0.35" data-strength="Open-source power" data-supplier="meta">Llama 3.3 70B - $0.35 / 1M</option>
+                        <option value="mistral-large" data-cost="0.30" data-strength="Reasoning & code" data-supplier="mistral">Mistral Large - $0.30 / 1M</option>
+                        <option value="mixtral-8x7b" data-cost="0.24" data-strength="General tasks" data-supplier="mistral">Mixtral 8x7B - $0.24 / 1M</option>
+                        <option value="gemini-1.5-flash" data-cost="0.15" data-strength="Fast responses" data-supplier="gemini">Gemini 1.5 Flash - $0.15 / 1M</option>
+                        <option value="gemini-2.0-flash" data-cost="0.10" data-strength="Speed & efficiency" data-supplier="gemini">Gemini 2.0 Flash - $0.10 / 1M</option>
+                    </select>
+                    <div class="model-strength" id="modelStrength">Best for: Balanced performance</div>
+                </div>
+
+                <div class="control-group">
+                    <label>Options</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item" title="Extended reasoning process - the model thinks through complex problems step-by-step before responding. Increases token usage but improves accuracy for difficult tasks.">
+                            <input type="checkbox" id="thinkingEnabled" onchange="updateModelInfo()">
+                            <label for="thinkingEnabled">🤔 Hmm</label>
+                        </div>
+                        <div class="checkbox-item" title="Real-time web search - the model searches the internet for current information and recent events. Adds context tokens but provides up-to-date answers.">
+                            <input type="checkbox" id="webSearchEnabled" onchange="updateModelInfo()">
+                            <label for="webSearchEnabled">🌐 Web</label>
+                        </div>
+                        <div class="checkbox-item" title="Ignore your stored memory - the model responds without referencing your saved preferences, background, or past conversations. Useful for fresh perspectives.">
+                            <input type="checkbox" id="ignoreMemory">
+                            <label for="ignoreMemory">🚫 Mems</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Creativity</label>
+                    <div class="creative-slider">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span style="font-size: 0.75rem; color: var(--text-secondary);">Less Creative</span>
+                            <span style="font-size: 0.75rem; color: var(--text-secondary);">More Creative</span>
+                        </div>
+                        <div class="slider-container">
+                            <input type="range" min="1" max="10" value="5" step="0.1" id="creativitySlider" oninput="updateCreativityLabel()">
+                            <span class="slider-label" id="creativityLabel">Default (Balanced)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Formality</label>
+                    <div class="creative-slider">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span style="font-size: 0.75rem; color: var(--text-secondary);">Less Formal</span>
+                            <span style="font-size: 0.75rem; color: var(--text-secondary);">More Formal</span>
+                        </div>
+                        <div class="slider-container">
+                            <input type="range" min="1" max="10" value="5" step="0.1" id="formalitySlider" oninput="updateFormalityLabel()">
+                            <span class="slider-label" id="formalityLabel">Normal Human</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <input type="text" id="messageInput" placeholder="Send a message..." onkeypress="handleKeyPress(event)">
+                <button class="send-btn" onclick="sendMessage()">Send</button>
+            </div>
+            <div id="budgetWarning" style="text-align: center; margin-top: 0.5rem; font-size: 0.813rem; color: #f87171; display: none;">
+                ⚠️ Tracking to exceed budget - open Spend tab to update budget
+            </div>
+        </div>
+    </div>
+
+    <!-- About Panel -->
+    <div class="side-panel" id="aboutPanel">
+        <div class="panel-header">
+            <div style="display: flex; align-items: center;">
+                <h2>ℹ️ Why Raff?</h2>
+                <img id="aboutPanelBadge" 
+                     class="panel-dog-badge" 
+                     src="https://cdn.jsdelivr.net/gh/chris-lyros/chat@main/webflow/images/dog1.jpg"
+                     alt="Dogs">
+            </div>
+            <button class="close-panel" onclick="closePanel('about')">×</button>
+        </div>
+        <div class="panel-content">
+            <div class="panel-info" style="padding: 1.5rem;">
+                <div style="margin-bottom: 1.5rem;">
+                    <h3 style="color: var(--accent-color); margin-bottom: 0.5rem; font-size: 1rem;">Full Cost Control</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6;">Choose from 20+ models. Pay only for what you use. Real-time budget tracking and model switching.</p>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <h3 style="color: var(--accent-color); margin-bottom: 0.5rem; font-size: 1rem;">Privacy First</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6;">Your chats stay in our database. Never used for training. PII automatically redacted before sending to LLMs.</p>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <h3 style="color: var(--accent-color); margin-bottom: 0.5rem; font-size: 1rem;">No Bias Creep</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6;">Memory stored separately from chat history. Get accurate, unbiased responses every time.</p>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <h3 style="color: var(--accent-color); margin-bottom: 0.5rem; font-size: 1rem;">Enterprise Ready</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6;">PII redaction protects sensitive business information. Safe for corporate use.</p>
+                </div>
+
+                <div style="border-top: 1px solid var(--border-color); padding-top: 1.5rem; margin-top: 1.5rem;">
+                    <h3 style="color: var(--accent-color); margin-bottom: 1rem; font-size: 1rem;">Privacy Settings</h3>
+                    <div class="checkbox-item" style="justify-content: flex-start;">
+                        <input type="checkbox" id="piiRedactionEnabled" checked onchange="handlePIIToggle(this)">
+                        <label for="piiRedactionEnabled" style="font-size: 0.875rem;">Enable PII Redaction (Recommended)</label>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.75rem; line-height: 1.5; margin-top: 0.75rem;">
+                        When enabled, names, emails, phone numbers, and sensitive business data are automatically redacted before sending to LLMs.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spend Panel -->
+    <div class="side-panel" id="spendPanel">
+        <div class="panel-header">
+            <h2>💰 Spending</h2>
+            <button class="close-panel" onclick="closePanel('spend')">×</button>
+        </div>
+        <div class="panel-content">
+            <div style="padding: 0.5rem;">
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Current Cycle (2 days)</h3>
+                    <div style="font-size: 2rem; font-weight: 600; color: var(--accent-color); margin-bottom: 0.25rem;">$8.47</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary);">28 days total in billing cycle</div>
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Projected Month-End</h3>
+                    <div id="projectedAmount" style="font-size: 2rem; font-weight: 600; color: #f87171; margin-bottom: 0.25rem;">$118.58</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Based on current usage rate</div>
+                    <div id="budgetWarningSpend" style="color: #fca5a5; font-size: 0.875rem; line-height: 1.5;">
+                        ⚠️ On track to exceed budget by $98.59.<br>
+                        <button onclick="switchToRecommendedModel()" style="background: none; border: none; color: var(--accent-color); text-decoration: underline; cursor: pointer; padding: 0; margin-top: 0.5rem; font-size: 0.875rem;">Consider switching to <span id="recommendedModel">GPT-4o Mini</span></button>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Monthly Budget Target</h3>
+                    <div style="font-size: 2rem; font-weight: 600; color: var(--accent-color); margin-bottom: 0.5rem;">$19.99</div>
+                    <input type="number" id="budgetInput" style="width: 100%; padding: 0.5rem; background: var(--primary-bg); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); font-size: 0.875rem;" 
+                           value="19.99" onchange="updateBudget(this.value)">
+                </div>
+
+                <div>
+                    <h3 style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;">This Session</h3>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="color: var(--text-secondary); font-size: 0.875rem;">Input tokens:</span>
+                        <span style="color: var(--text-primary); font-size: 0.875rem;">1,240 ($0.001)</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="color: var(--text-secondary); font-size: 0.875rem;">Output tokens:</span>
+                        <span style="color: var(--text-primary); font-size: 0.875rem;">890 ($0.001)</span>
+                    </div>
+                    <div style="border-top: 1px solid var(--border-color); margin-top: 0.75rem; padding-top: 0.75rem; display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-primary); font-size: 0.875rem; font-weight: 600;">Session Total:</span>
+                        <span style="color: var(--accent-color); font-size: 0.875rem; font-weight: 600;">$0.002</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-chat">
+            <div class="panel-chat-label">Ask about costs & budgets</div>
+            <div class="panel-input-area">
+                <input type="text" id="spendChatInput" placeholder="e.g., How can I save money?" onkeypress="handlePanelKeyPress(event, 'spend')">
+                <button onclick="sendPanelMessage('spend')">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mems Panel -->
+    <div class="side-panel" id="memsPanel">
+        <div class="panel-header">
+            <div style="display: flex; align-items: center;">
+                <h2>🧠 Memory</h2>
+                <img id="memsPanelBadge" 
+                     class="panel-dog-badge" 
+                     src="https://cdn.jsdelivr.net/gh/chris-lyros/chat@main/webflow/images/dog4.jpg"
+                     alt="Dogs">
+            </div>
+            <button class="close-panel" onclick="closePanel('mems')">×</button>
+        </div>
+        <div class="panel-content">
+            <div style="padding: 0.5rem;">
+                <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
+                    Your memory helps Raff remember you across conversations without forming biased patterns. Memory is stored separately from chat history for accurate, context-aware responses.
+                </p>
+
+                <div style="background: var(--primary-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.25rem; line-height: 1.8; color: var(--text-secondary); font-size: 0.875rem;">
+                    <span style="color: var(--accent-color); font-weight: 600;">Personal:</span> Lives in Melbourne, VIC. Enjoys specialty coffee and automation. Prefers direct communication style.
+                    
+                    <span style="display: block; margin-top: 1rem;"></span>
+                    
+                    <span style="color: var(--accent-color); font-weight: 600;">Professional:</span> CFO at Lyros Pty Ltd. Builds n8n workflows for business automation and customer applications. Focuses on cost-effective, maintainable solutions.
+                    
+                    <span style="display: block; margin-top: 1rem;"></span>
+                    
+                    <span style="color: var(--accent-color); font-weight: 600;">Writing Style:</span> Technical, concise, schema-first approach. Prefers bullet points and structured documentation.
+                    
+                    <span style="display: block; margin-top: 1rem;"></span>
+                    
+                    <span style="color: var(--accent-color); font-weight: 600;">Interests:</span> API integrations, workflow optimization, LLM applications, CrossFit, specialty coffee culture.
+                </div>
+            </div>
+        </div>
+        <div class="panel-chat">
+            <div class="panel-chat-label">Manage your memory</div>
+            <div class="panel-input-area">
+                <input type="text" id="memsChatInput" placeholder="e.g., Update my coffee preference..." onkeypress="handlePanelKeyPress(event, 'mems')">
+                <button onclick="sendPanelMessage('mems')">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/chris-lyros/chat@main/webflow/raff-combo.js"></script>
